@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergyShare - Logout Confirmation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background: #ffffff;
+        --foreground: #000000;
+        --muted: #f1f5f9;
+        --muted-foreground: #64748b;
+        --border: #e2e8f0;
+        --primary: #000000;
+        --primary-foreground: #ffffff;
+        --card: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .popup {
+        background-color: var(--card);
+        border-radius: 1rem;
+        padding: 2rem;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      .icon-container {
+        margin-bottom: 1.5rem;
+      }
+
+      .icon {
+        width: 4rem;
+        height: 4rem;
+        border: 2px solid #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+      }
+
+      .icon-info {
+        width: 0.5rem;
+        height: 0.5rem;
+        background-color: #000;
+        border-radius: 50%;
+        margin-bottom: 0.5rem;
+      }
+
+      .icon-info::after {
+        content: "";
+        display: block;
+        width: 0.5rem;
+        height: 1rem;
+        background-color: #000;
+        border-radius: 0.25rem;
+        margin: 0.25rem auto 0;
+      }
+
+      .popup-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+      }
+
+      .button-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        background-color: #e2e2e2;
+        transition: background-color 0.2s;
+      }
+
+      .btn:hover {
+        background-color: #d1d1d1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="popup">
+      <div class="icon-container">
+        <div class="icon">
+          <div class="icon-info"></div>
+        </div>
+      </div>
+      <h2 class="popup-title">Are you sure you want to logout?</h2>
+      <div class="button-container">
+        <button class="btn" onclick="confirmLogout()">Yes</button>
+        <button class="btn" onclick="cancelLogout()">No</button>
+      </div>
+    </div>
+
+    <script>
+      function confirmLogout() {
+        // Redirect to login page
+        window.location.href = "logout-success-popup.html";
+      }
+
+      function cancelLogout() {
+        // Close the popup (in a real app, this would dismiss the modal)
+        window.history.back();
+      }
+    </script>
+  </body>
+</html>

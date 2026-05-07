@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergyShare - Sell Energy</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background: #ffffff;
+        --foreground: #000000;
+        --muted: #f1f5f9;
+        --muted-foreground: #64748b;
+        --border: #e2e8f0;
+        --primary: #000000;
+        --primary-foreground: #ffffff;
+        --card: #ffffff;
+        --sidebar-bg: #e2e2e2;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--foreground);
+        min-height: 100vh;
+        display: flex;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        width: 80px;
+        background-color: var(--sidebar-bg);
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 0;
+      }
+
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 0.75rem 0;
+        color: var(--foreground);
+        text-decoration: none;
+        font-size: 0.75rem;
+      }
+
+      .nav-item.active {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-item:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-icon {
+        margin-bottom: 0.25rem;
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Main Content Styles */
+      .main-content {
+        flex: 1;
+        margin-left: 80px;
+        width: calc(100% - 80px);
+        padding: 1rem;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background-color: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        outline: none;
+      }
+
+      .input:focus {
+        border-color: var(--primary);
+      }
+
+      .select {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        outline: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1rem;
+      }
+
+      .select:focus {
+        border-color: var(--primary);
+      }
+
+      .input-group {
+        display: flex;
+        align-items: center;
+      }
+
+      .input-group-text {
+        padding: 0.5rem 0.75rem;
+        background-color: var(--muted);
+        border: 1px solid var(--border);
+        border-left: none;
+        border-radius: 0 0.25rem 0.25rem 0;
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+
+      .input-group .input {
+        border-radius: 0.25rem 0 0 0.25rem;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .checkbox {
+        width: 1rem;
+        height: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: var(--primary-foreground);
+      }
+
+      .btn-primary:hover {
+        background-color: #333333;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--border);
+        color: var(--foreground);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--muted);
+      }
+
+      .btn svg {
+        margin-right: 0.5rem;
+      }
+
+      .info-text {
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+        margin-top: 0.5rem;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .card-title {
+        font-weight: 600;
+      }
+
+      .energy-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat-card {
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+
+      @media (max-width: 768px) {
+        .energy-stats {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <a href="dashboard.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        Dashboard
+      </a>
+      <a href="buy.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path
+            d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+          ></path>
+          <polyline points="9 17 6 17 3 7"></polyline>
+        </svg>
+        Buy
+      </a>
+      <a href="sell.html" class="nav-item active">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"
+          ></path>
+        </svg>
+        Sell
+      </a>
+      <a href="wallet-pin.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+          <circle cx="12" cy="12" r="2"></circle>
+          <path d="M6 12h.01M18 12h.01"></path>
+        </svg>
+        Wallet
+      </a>
+      <a href="profile.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        Profile
+      </a>
+      <a href="logout-confirmation.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Logout
+      </a>
+    </nav>
+
+    <div class="main-content">
+      <div class="container">
+        <h1>Sell Energy</h1>
+
+        <!-- Energy Stats -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Your Energy Stats</h2>
+          </div>
+
+          <div class="energy-stats">
+            <div class="stat-card">
+              <div class="stat-value">245 kWh</div>
+              <div class="stat-label">Available Energy</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-value">$0.14/kWh</div>
+              <div class="stat-label">Market Average</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sell Form -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">List Your Energy</h2>
+          </div>
+
+          <form>
+            <!-- Amount -->
+            <div class="form-group">
+              <label class="form-label" for="amount"
+                >Amount to Sell (kWh)</label
+              >
+              <input
+                type="number"
+                id="amount"
+                class="input"
+                placeholder="Enter amount"
+                min="1"
+                max="245"
+              />
+              <p class="info-text">Maximum available: 245 kWh</p>
+            </div>
+
+            <!-- Price -->
+            <div class="form-group">
+              <label class="form-label" for="price">Price per kWh</label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  id="price"
+                  class="input"
+                  placeholder="Enter price"
+                  step="0.01"
+                  value="0.14"
+                />
+                <span class="input-group-text">$/kWh</span>
+              </div>
+              <p class="info-text">Market average: $0.14/kWh</p>
+            </div>
+
+            <!-- Duration -->
+            <div class="form-group">
+              <label class="form-label" for="duration">Listing Duration</label>
+              <select id="duration" class="select">
+                <option value="1">1 day</option>
+                <option value="3">3 days</option>
+                <option value="7" selected>7 days</option>
+                <option value="14">14 days</option>
+                <option value="30">30 days</option>
+              </select>
+            </div>
+
+            <!-- Auto-renew -->
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" id="auto-renew" class="checkbox" />
+                <label for="auto-renew">Auto-renew listing if not sold</label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              List Energy for Sale
+            </button>
+          </form>
+        </div>
+
+        <!-- Tips -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Selling Tips</h2>
+          </div>
+
+          <ul style="padding-left: 1.5rem; font-size: 0.875rem">
+            <li style="margin-bottom: 0.5rem">
+              Set competitive prices to attract more buyers.
+            </li>
+            <li style="margin-bottom: 0.5rem">
+              Consider the time of day when energy demand is higher.
+            </li>
+            <li style="margin-bottom: 0.5rem">
+              Maintain a good seller rating by fulfilling transactions promptly.
+            </li>
+            <li>
+              Keep your energy generation equipment well-maintained for
+              consistent output.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

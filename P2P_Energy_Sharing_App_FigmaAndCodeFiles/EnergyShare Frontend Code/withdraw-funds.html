@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergyShare - Withdraw Funds</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background: #ffffff;
+        --foreground: #000000;
+        --muted: #f1f5f9;
+        --muted-foreground: #64748b;
+        --border: #e2e8f0;
+        --primary: #000000;
+        --primary-foreground: #ffffff;
+        --card: #ffffff;
+        --sidebar-bg: #e2e2e2;
+        --success: #22c55e;
+        --error: #ef4444;
+        --warning: #f59e0b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--foreground);
+        min-height: 100vh;
+        display: flex;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        width: 80px;
+        background-color: var(--sidebar-bg);
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 0;
+      }
+
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 0.75rem 0;
+        color: var(--foreground);
+        text-decoration: none;
+        font-size: 0.75rem;
+      }
+
+      .nav-item.active {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-item:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-icon {
+        margin-bottom: 0.25rem;
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Main Content Styles */
+      .main-content {
+        flex: 1;
+        margin-left: 80px;
+        width: calc(100% - 80px);
+        padding: 1rem;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .back-button {
+        margin-right: 1rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--foreground);
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .card {
+        background-color: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+      }
+
+      .wallet-balance {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background-color: var(--muted);
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .balance-label {
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+      }
+
+      .balance-amount {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .form-input:focus {
+        border-color: var(--primary);
+      }
+
+      .form-error {
+        color: var(--error);
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        display: none;
+      }
+
+      .form-input.error {
+        border-color: var(--error);
+      }
+
+      .form-input.error + .form-error {
+        display: block;
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      .input-group .form-input {
+        padding-left: 2rem;
+      }
+
+      .input-group-text {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted-foreground);
+        font-weight: 500;
+      }
+
+      .withdrawal-methods {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .withdrawal-method {
+        border: 1px solid var(--border);
+        border-radius: 0.25rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        transition: border-color 0.2s, background-color 0.2s;
+      }
+
+      .withdrawal-method:hover {
+        background-color: var(--muted);
+      }
+
+      .withdrawal-method.selected {
+        border-color: var(--primary);
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .withdrawal-method-icon {
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--muted);
+        border-radius: 0.25rem;
+      }
+
+      .withdrawal-method-details {
+        flex: 1;
+      }
+
+      .withdrawal-method-name {
+        font-weight: 500;
+        font-size: 0.875rem;
+      }
+
+      .withdrawal-method-info {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: var(--primary-foreground);
+      }
+
+      .btn-primary:hover {
+        background-color: #333333;
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--border);
+        color: var(--foreground);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--muted);
+      }
+
+      .alert {
+        padding: 0.75rem;
+        border-radius: 0.25rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+      }
+
+      .alert-warning {
+        background-color: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        color: #92400e;
+      }
+
+      @media (max-width: 768px) {
+        .withdrawal-methods {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <a href="dashboard.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        Dashboard
+      </a>
+      <a href="buy.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path
+            d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+          ></path>
+          <polyline points="9 17 6 17 3 7"></polyline>
+        </svg>
+        Buy
+      </a>
+      <a href="sell.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"
+          ></path>
+        </svg>
+        Sell
+      </a>
+      <a href="wallet.html" class="nav-item active">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+          <circle cx="12" cy="12" r="2"></circle>
+          <path d="M6 12h.01M18 12h.01"></path>
+        </svg>
+        Wallet
+      </a>
+      <a href="profile.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        Profile
+      </a>
+      <a href="logout-confirmation.html" class="nav-item">
+        <svg
+          class="nav-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Logout
+      </a>
+    </nav>
+
+    <div class="main-content">
+      <div class="container">
+        <div class="header">
+          <button
+            class="back-button"
+            onclick="window.location.href='wallet.html'"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <h1>Withdraw Funds</h1>
+        </div>
+
+        <div class="alert alert-warning">
+          Withdrawals typically take 1-3 business days to process depending on
+          your bank.
+        </div>
+
+        <div class="card">
+          <div class="wallet-balance">
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-amount">$250.00</div>
+          </div>
+
+          <h2 class="card-title">Amount</h2>
+
+          <form id="withdraw-form" onsubmit="return validateForm()">
+            <div class="form-group">
+              <label class="form-label" for="amount">Amount to Withdraw</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  id="amount"
+                  class="form-input"
+                  min="10"
+                  max="250"
+                  step="0.01"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+              <span class="form-error"
+                >Please enter a valid amount (minimum $10, maximum $250)</span
+              >
+            </div>
+
+            <h2 class="card-title">Withdrawal Method</h2>
+
+            <div class="withdrawal-methods">
+              <div
+                class="withdrawal-method"
+                onclick="selectWithdrawalMethod(this, 'bank-account')"
+              >
+                <div class="withdrawal-method-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path
+                      d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="withdrawal-method-details">
+                  <div class="withdrawal-method-name">Bank Account</div>
+                  <div class="withdrawal-method-info">1-3 business days</div>
+                </div>
+              </div>
+
+              <div
+                class="withdrawal-method"
+                onclick="selectWithdrawalMethod(this, 'paypal')"
+              >
+                <div class="withdrawal-method-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                  </svg>
+                </div>
+                <div class="withdrawal-method-details">
+                  <div class="withdrawal-method-name">PayPal</div>
+                  <div class="withdrawal-method-info">Instant transfer</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Account Form (initially hidden) -->
+            <div id="bank-account-form" style="display: none">
+              <div class="form-group">
+                <label class="form-label" for="account-name"
+                  >Account Holder Name</label
+                >
+                <input
+                  type="text"
+                  id="account-name"
+                  class="form-input"
+                  placeholder="John Doe"
+                />
+                <span class="form-error"
+                  >Please enter the account holder name</span
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="account-number"
+                  >Account Number</label
+                >
+                <input
+                  type="text"
+                  id="account-number"
+                  class="form-input"
+                  placeholder="123456789"
+                />
+                <span class="form-error"
+                  >Please enter a valid account number</span
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="routing-number"
+                  >Routing Number</label
+                >
+                <input
+                  type="text"
+                  id="routing-number"
+                  class="form-input"
+                  placeholder="123456789"
+                />
+                <span class="form-error"
+                  >Please enter a valid routing number</span
+                >
+              </div>
+            </div>
+
+            <!-- PayPal Form (initially hidden) -->
+            <div id="paypal-form" style="display: none">
+              <div class="form-group">
+                <label class="form-label" for="paypal-email"
+                  >PayPal Email</label
+                >
+                <input
+                  type="email"
+                  id="paypal-email"
+                  class="form-input"
+                  placeholder="your-email@example.com"
+                />
+                <span class="form-error"
+                  >Please enter a valid email address</span
+                >
+              </div>
+            </div>
+
+            <input type="hidden" id="selected-withdrawal-method" value="" />
+
+            <button type="submit" class="btn btn-primary">
+              Withdraw Funds
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let selectedWithdrawalMethod = "";
+
+      function selectWithdrawalMethod(element, method) {
+        // Remove selected class from all withdrawal methods
+        document.querySelectorAll(".withdrawal-method").forEach((el) => {
+          el.classList.remove("selected");
+        });
+
+        // Add selected class to clicked withdrawal method
+        element.classList.add("selected");
+
+        // Store selected withdrawal method
+        selectedWithdrawalMethod = method;
+        document.getElementById("selected-withdrawal-method").value = method;
+
+        // Hide all withdrawal method forms
+        document.getElementById("bank-account-form").style.display = "none";
+        document.getElementById("paypal-form").style.display = "none";
+
+        // Show selected withdrawal method form
+        if (method === "bank-account") {
+          document.getElementById("bank-account-form").style.display = "block";
+        } else if (method === "paypal") {
+          document.getElementById("paypal-form").style.display = "block";
+        }
+      }
+
+      function validateForm() {
+        let isValid = true;
+
+        // Validate amount
+        const amount = document.getElementById("amount");
+        const amountValue = parseFloat(amount.value);
+        if (!amount.value || amountValue < 10 || amountValue > 250) {
+          amount.classList.add("error");
+          isValid = false;
+        } else {
+          amount.classList.remove("error");
+        }
+
+        // Validate withdrawal method selection
+        if (!selectedWithdrawalMethod) {
+          alert("Please select a withdrawal method");
+          isValid = false;
+        } else {
+          // Validate withdrawal method specific fields
+          if (selectedWithdrawalMethod === "bank-account") {
+            // Validate account holder name
+            const accountName = document.getElementById("account-name");
+            if (!accountName.value.trim()) {
+              accountName.classList.add("error");
+              isValid = false;
+            } else {
+              accountName.classList.remove("error");
+            }
+
+            // Validate account number
+            const accountNumber = document.getElementById("account-number");
+            if (
+              !accountNumber.value ||
+              !/^\d{9,17}$/.test(accountNumber.value.replace(/\s/g, ""))
+            ) {
+              accountNumber.classList.add("error");
+              isValid = false;
+            } else {
+              accountNumber.classList.remove("error");
+            }
+
+            // Validate routing number
+            const routingNumber = document.getElementById("routing-number");
+            if (
+              !routingNumber.value ||
+              !/^\d{9}$/.test(routingNumber.value.replace(/\s/g, ""))
+            ) {
+              routingNumber.classList.add("error");
+              isValid = false;
+            } else {
+              routingNumber.classList.remove("error");
+            }
+          } else if (selectedWithdrawalMethod === "paypal") {
+            // Validate PayPal email
+            const paypalEmail = document.getElementById("paypal-email");
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(paypalEmail.value)) {
+              paypalEmail.classList.add("error");
+              isValid = false;
+            } else {
+              paypalEmail.classList.remove("error");
+            }
+          }
+        }
+
+        // If form is valid, process withdrawal
+        if (isValid) {
+          // In a real app, this would submit the form data to a server
+          // For demo purposes, we'll redirect to wallet page with a success message
+          window.location.href = "withdraw-success-popup.html";
+        }
+
+        return false; // Prevent form submission
+      }
+
+      // Only allow numbers for account number and routing number
+      document
+        .getElementById("account-number")
+        ?.addEventListener("input", function (e) {
+          e.target.value = e.target.value.replace(/\D/g, "");
+        });
+
+      document
+        .getElementById("routing-number")
+        ?.addEventListener("input", function (e) {
+          e.target.value = e.target.value.replace(/\D/g, "");
+        });
+    </script>
+  </body>
+</html>

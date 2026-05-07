@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnergyShare - Confirm Transaction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #ffffff;
+            --foreground: #000000;
+            --muted: #f1f5f9;
+            --muted-foreground: #64748b;
+            --border: #e2e8f0;
+            --primary: #000000;
+            --primary-foreground: #ffffff;
+            --card: #ffffff;
+            --sidebar-bg: #e2e2e2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .popup {
+            background-color: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .popup-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .popup-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .popup-subtitle {
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+        }
+        
+        .transaction-details {
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .total-row {
+            background-color: var(--muted);
+            font-weight: 700;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .btn-primary:hover {
+            background-color: #333333;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--foreground);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="popup">
+        <div class="popup-header">
+            <h1 class="popup-title">Confirm Transaction</h1>
+            <p class="popup-subtitle">Please review the details before confirming</p>
+        </div>
+        
+        <div class="transaction-details">
+            <div class="detail-row">
+                <span class="detail-label">Transaction Type</span>
+                <span class="detail-value">Energy Purchase</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Seller</span>
+                <span class="detail-value">Solar Home #1234</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Energy Amount</span>
+                <span class="detail-value">50 kWh</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Price per kWh</span>
+                <span class="detail-value">$0.13</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Transaction Fee</span>
+                <span class="detail-value">$0.25</span>
+            </div>
+            <div class="detail-row total-row">
+                <span class="detail-label">Total Amount</span>
+                <span class="detail-value">$6.75</span>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button class="btn btn-outline" onclick="cancelTransaction()">Cancel</button>
+            <button class="btn btn-primary" onclick="confirmTransaction()">Confirm</button>
+        </div>
+    </div>
+
+    <script>
+        function confirmTransaction() {
+            // In a real app, this would process the transaction
+            window.location.href = "transaction-confirmation.html";
+        }
+        
+        function cancelTransaction() {
+            // In a real app, this would close the popup
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
